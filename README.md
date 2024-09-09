@@ -1,66 +1,114 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Introduction
+This project is a Task Management API built using Laravel, designed to handle tasks with varying priority, status, and due dates. The API provides full CRUD functionality for both tasks and users, and includes advanced features such as role-based access control (RBAC) using the Spatie Permissions package, JWT-based authentication for securing endpoints, Soft Deletes for tasks and users, and custom scopes for filtering tasks by priority and status. The system is structured to adhere to RESTful standards, ensuring that all HTTP status codes, data validation, and error handling are correctly implemented.
+## Prerequisites
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+- [PHP](https://www.php.net/) >= 8.0
+- [Composer](https://getcomposer.org/)
+- [Laravel](https://laravel.com/) >= 9.0
+- [MySQL](https://www.mysql.com/) or any other database supported by Laravel
+- [Postman](https://www.postman.com/) for testing API endpoints
 
-## About Laravel
+## Setup
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+1. **Clone the project:**
+   git clone https://github.com/SafaaNahhas/TaskManegment.git
+   cd movie-library
+## Install backend dependencies:
+composer install
+Create the .env file:
+Copy the .env.example file to .env:
+cp .env.example .env
+## modify the .env file to set up your database connection:
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+## Generate the application key:
+php artisan key:generate
+## Run migrations:
+php artisan migrate
+## Start the local server:
+php artisan serve
+You can now access the project at http://localhost:8000.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Project Structure
+- `TaskController.php`: Handles API requests related to tasks, such as creating, updating, deleting, and retrieving tasks.
+- `UserController.php` : Handles API requests related to user management, including creating and updating user profiles.
+- `AuthController.php`: Manages API requests related to user authentication, including registration, login, and token management.
+-`TaskService.php`: Contains the business logic for managing tasks.
+BorrowRecordService.php: Contains the business logic for managing borrow records.
+- `UserService.php`: Contains the business logic for managing users.
+- `AuthService.php`: Contains the business logic for managing user authentication, including validating credentials and generating JWT tokens.
+- `ApiResponseService.php`: A service class responsible for formatting and returning standardized API responses.
+- `StoreTaskRequest.php`: A Form Request class for validating data when creating tasks.
+- `UpdateStatusRequest.php`: A Form Request class for validating data when updating status tasks.
+- `AssignTaskRequest.php`: A Form Request class for validating data when assign task to user.
+- `UpdateTaskRequest.php`: A Form Request class for validating data when updating tasks.
+- `RegisterRequest.php`: A Form Request class for validating data during user registration.
+- `LoginRequest.php`: A Form Request class for validating data during user login.
+- `StoreUserRequest.php`: A Form Request class for validating data when creating users.
+- `UpdateUserRequest.php`: A Form Request class for validating data when updating user profiles.
+- `api.php`: Contains route definitions representing the API endpoints, mapping HTTP requests to the appropriate controllers.
+## Advanced Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Filtering
+Books can be filtered by priority , status using query parameters.
+Features
 
-## Learning Laravel
+2. Task Management:
+Users can create, view, update, and delete tasks.
+Each task has attributes like title, description, priority, due_date, and status.
+Managers can assign tasks to other users, and only the assigned user can modify the task's status or details.
+Admins have full control over all tasks, including the ability to delete them permanently using forceDelete.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. User Management:
+The API provides the ability to create, view, update, and delete users.
+Users are assigned roles (Admin, Manager, User), each with different access levels to task operations.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+4. Role-Based Access Control (RBAC):
+The Spatie Permissions package is used to manage roles and permissions.
+Admins have full permissions for all tasks and users.
+Managers can assign tasks and manage tasks they created or assigned.
+Users can only modify tasks assigned to them and update task statuses.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+5. JWT Authentication:
+JWT (JSON Web Tokens) are used for user authentication, securing access to the API.
+Only authenticated users can perform operations on tasks and users.
 
-## Laravel Sponsors
+6. Soft Deletes:
+Tasks and users are soft-deleted, meaning they can be restored if needed.
+Deleted tasks are not removed permanently unless forceDelete is called.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+7. Task Assignment:
+Managers can assign tasks to other users using the assigned_to field.
+Only assigned users can modify the task details or mark it as completed.
 
-### Premium Partners
+8. Date Handling:
+Task due dates are handled using Carbon with Accessors and Mutators for custom formatting (e.g., d-m-Y H:i).
+Tasks can be automatically marked as "overdue" if the current date exceeds the due_date.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+9. Task Scopes:
+Custom query scopes are provided to filter tasks by priority and status.
 
-## Contributing
+10. Seeders
+A PermissionsSeeder is provided to create roles and permissions in the database:
+Admin is granted all permissions (create, view, update, delete tasks, etc.).
+Manager is granted permissions to create, assign, and manage tasks, but not delete users.
+User has limited permissions, mostly to manage their own tasks.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+11. Authentication: JWT
+JWT-based authentication ensures that all routes are protected and accessible only to authenticated users:
+Users must log in with valid credentials to receive a JWT token.
+Each request must include this token to authenticate and authorize access to task and user management functionalities.
 
-## Code of Conduct
+12. Soft Deletes
+Soft deletes allow tasks and users to be marked as deleted without removing their records from the database. This provides the ability to recover tasks or users if needed:
+Soft-deleted records can be restored using restore.
+Admins can perform permanent deletions using forceDelete.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## A Postman collection
+is provided to easily test the API endpoints. You can import it into your Postman application and run the requests.
+## Postman Documentation
+https://documenter.getpostman.com/view/34501481/2sAXjSy8p1
